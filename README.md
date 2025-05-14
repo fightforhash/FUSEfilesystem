@@ -1,85 +1,67 @@
+# FUSE-based File System Implementation
+
 This project demonstrates my implementation of a FUSE-based filesystem.  
 It was heavily inspired by the [CS537 Spring 2024 Project 7 instructions](https://git.doit.wisc.edu/cdis/cs/courses/cs537/spring24/public/p7/-/blob/main/instructions/instructions.md?ref_type=heads).
 
-Below is the set of FUSE callbacks I implemented:
+## Implemented FUSE Callbacks
 
+```c
 static struct fuse_operations ops = {
-  .getattr = wfs_getattr,
-  .mknod   = wfs_mknod,
-  .mkdir   = wfs_mkdir,
-  .unlink  = wfs_unlink,
-  .rmdir   = wfs_rmdir,
-  .read    = wfs_read,
-  .write   = wfs_write,
-  .readdir = wfs_readdir,
+    .getattr = wfs_getattr,
+    .mknod   = wfs_mknod,
+    .mkdir   = wfs_mkdir,
+    .unlink  = wfs_unlink,
+    .rmdir   = wfs_rmdir,
+    .read    = wfs_read,
+    .write   = wfs_write,
+    .readdir = wfs_readdir,
 };
+```
 
-The file system is designed as a tree where folders are nodes with children, while files are leaves.
-Each file and folder has an inode to store information about it.
-This information includes size, permissions, file type etc.
+## File System Design
 
-Each file and folder holds data blocks. Data blocks of files hold file data, while those of directories hold directory entry information.
+The file system is designed as a tree structure where folders are nodes that can have children and files are leaf nodes. Each file and folder has an inode that stores information such as size, permissions, and file type. Both files and folders hold data blocks, where file data blocks store file content and directory data blocks store directory entry information.
 
-Functions:
-getattr():
-this function returns attributes of a file.
-Time attributes are not set.
-permissions, file type, size, links are set based on the attributes of the file.
+## Core Functions
 
-mknod():
-This function is used for creating a new file.
-If enough space is available on the disk, a new inode is allocated for the file,
-and a directory entry storing its name and inode index, is allocated in the parent folder.
-The initial file size is 0, while the size of the parent folder is incremented to the size of a directory entry.
-If the file exists, then an error is returned.
+### getattr()
+This function returns file attributes. While time attributes are not set, it handles permissions, file type, size, and links based on file attributes.
 
-mkdir():
-This is similar to mknod(), only that it is used to create a new directory.
-The difference from mknod() is here the file type is set to directory. 
+### mknod()
+This function creates a new file. When sufficient disk space is available, it allocates a new inode for the file and creates a directory entry in the parent folder storing the filename and inode index. The initial file size is set to 0, and the parent folder size increases by the directory entry size. If the file already exists, it returns an error.
 
-unlink():
-This function is used to delete a file.
-If the file path exists, the file is deleted, and all its data blocks are freed. Its inode is freed and its directory entry is removed from the parent directory.
-If the file does not exist, an error is returned.
+### mkdir()
+This function is similar to mknod() but is used for directory creation. The main difference is that the file type is set to directory.
 
-rmdir():
-This is similar to unlink(), only that it applies to directories.
-The mode of the inode is checked to ensure this is a folder.
-Although our implementation recursively deletes directory contents, upon inspection, we found that the system already does this by default.
-All the directory entries are cleared out and data blocks used freed.
+### unlink()
+This function handles file deletion. When a file path exists, it deletes the file, frees all data blocks, frees the inode, and removes the directory entry from the parent directory. If the file doesn't exist, it returns an error.
 
-read(), write():
-These functions are used to read from and write to a file. The function checks whether the file exists, and that is is readable/writable and if not, an error is returned.
-When reading, we make sure to not go beyond the file size.
-When writing, we can write as long as the disk space is still available.
-It was a challenging and interesting experience to deal with read/write routines spanning multiple blocks.
+### rmdir()
+This function is similar to unlink() but handles directory deletion. It verifies the inode mode to ensure it's a folder, recursively deletes directory contents, and clears all directory entries while freeing data blocks.
 
-readdir():
-For this function, the directory contents are printed. 
-We also ensure that "." and ".." are included.
-filter argument was used to return this information.
+### read(), write()
+These functions handle file reading and writing operations. They verify file existence and read/write permissions. The read operation ensures it doesn't exceed the file size, while write operations continue as long as disk space is available. The implementation handles read/write operations that span multiple blocks.
 
+### readdir()
+This function prints directory contents, including "." and ".." entries, and uses a filter argument to return information.
 
-Making the file system (The disk)
-We design the disk to match the tests given as shown below
+## Disk Structure
+
+```
           d_bitmap_ptr       d_blocks_ptr
                v                  v
 +----+---------+---------+--------+--------------------------+
-| SB | IBITMAP | DBITMAP | INODES |       DATA BLOCKS        |
+| SB | IBITMAP | DBITMAP | INODES |       DATA BLOCKS       |
 +----+---------+---------+--------+--------------------------+
 0    ^                   ^
 i_bitmap_ptr        i_blocks_ptr
+```
 
-Each inode = 512 bytes, althougn an actual inode doesn't require that much space.
-The bitmaps are used to keep track of allocated and free blocks/inodes.
-An allocated block/inode has is corresponding index bit set to 1 and 0 otherwise.
-The super block corresponds to the disk information.
+Each inode occupies 512 bytes, which is larger than actually needed. The system uses bitmaps to track allocated and free blocks/inodes, where an allocated block/inode has its corresponding index bit set to 1, and a free block/inode has it set to 0. The super block stores disk information.
 
+## Testing and Conclusion
 
-Discusion and Conclusion:
-The file system was tested through the terminal using the provided test cases in CS537 Spring 2024 P7.
-Interestingly, sometimes unmounting the disk fails because it is still busy. This happened often when running the provided tests.
-The subsequent test complains about the mount directory being unempty and it usual fails. Thus, we modify the test file to try unmounting several times as long as the disk is still mounted.
+The file system has been verified using CS537 Spring 2024 P7 test cases. During testing, we encountered some known issues: unmounting can fail when the disk is still busy, and the mount directory may show "not empty" errors. To address these issues, we modified the test file to attempt unmounting multiple times while the disk is mounted.
 
 
 
