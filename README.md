@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" alt="FUSE Filesystem logo" width="520">
+</p>
+
 # FUSE-based File System Implementation
 
 This project demonstrates my implementation of a FUSE-based filesystem.  

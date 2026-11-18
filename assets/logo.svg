@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="t">
+  <title id="t">FUSE Filesystem logo: a folder whose body is a block bitmap</title>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="80%">
+      <stop offset="0" stop-color="#1b2533"/>
+      <stop offset="1" stop-color="#0c1118"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="500" fill="url(#bg)"/>
+
+  <!-- Folder outline: the directory tree. -->
+  <path d="M 262 108 L 352 108 L 376 132 L 538 132 Q 546 132 546 140 L 546 300 Q 546 308 538 308 L 262 308 Q 254 308 254 300 L 254 116 Q 254 108 262 108 Z" fill="none" stroke="#4fd1c5" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- Block bitmap inside: used blocks filled, free blocks outlined. -->
+  <g fill="#4fd1c5">
+    <rect x="282" y="158" width="26" height="26" rx="3"/><rect x="318" y="158" width="26" height="26" rx="3"/><rect x="354" y="158" width="26" height="26" rx="3"/>
+    <rect x="426" y="158" width="26" height="26" rx="3"/><rect x="282" y="194" width="26" height="26" rx="3"/><rect x="390" y="194" width="26" height="26" rx="3"/>
+    <rect x="462" y="194" width="26" height="26" rx="3"/><rect x="498" y="194" width="26" height="26" rx="3"/><rect x="318" y="230" width="26" height="26" rx="3"/>
+    <rect x="354" y="230" width="26" height="26" rx="3"/><rect x="426" y="230" width="26" height="26" rx="3"/><rect x="282" y="266" width="26" height="26" rx="3" fill="#f6ad55"/>
+  </g>
+  <g fill="none" stroke="#4fd1c5" stroke-opacity="0.45" stroke-width="2.5">
+    <rect x="390" y="158" width="26" height="26" rx="3"/><rect x="462" y="158" width="26" height="26" rx="3"/><rect x="498" y="158" width="26" height="26" rx="3"/>
+    <rect x="318" y="194" width="26" height="26" rx="3"/><rect x="354" y="194" width="26" height="26" rx="3"/><rect x="426" y="194" width="26" height="26" rx="3"/>
+    <rect x="282" y="230" width="26" height="26" rx="3"/><rect x="390" y="230" width="26" height="26" rx="3"/><rect x="462" y="230" width="26" height="26" rx="3"/>
+    <rect x="498" y="230" width="26" height="26" rx="3"/><rect x="318" y="266" width="26" height="26" rx="3"/><rect x="354" y="266" width="26" height="26" rx="3"/>
+    <rect x="390" y="266" width="26" height="26" rx="3"/><rect x="426" y="266" width="26" height="26" rx="3"/><rect x="462" y="266" width="26" height="26" rx="3"/>
+    <rect x="498" y="266" width="26" height="26" rx="3"/>
+  </g>
+
+  <text x="400" y="398" text-anchor="middle" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="62" font-weight="800" letter-spacing="-1.5" fill="#ffffff">FUSE Filesystem</text>
+  <text x="400" y="440" text-anchor="middle" font-family="Menlo, Consolas, monospace" font-size="21" fill="#9fb3c8">inodes and block bitmaps, written in C</text>
+</svg>
